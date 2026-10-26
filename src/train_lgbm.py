@@ -27,7 +27,7 @@ for fold in TRAIN_ENDS:
             alpha=tau,
             n_estimators=200,
             learning_rate=0.05,
-            num_leaves=31,
+            num_leaves=63,
             min_child_samples=100,
             random_state=42,
             verbose=-1,
@@ -44,5 +44,5 @@ for fold in TRAIN_ENDS:
     all_results.append(result)
 
 all_results = pd.concat(all_results)
-all_results.to_parquet("data/processed/lgbm_quantiles.parquet", index=False)
+all_results.to_parquet("data/processed/lgbm_tuned_quantiles.parquet", index=False)
 print(all_results.groupby("fold").size())

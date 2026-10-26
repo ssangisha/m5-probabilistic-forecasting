@@ -1,0 +1,7 @@
+setting,mean_pinball_folds_1_to_3
+bigger trees,0.2432
+more trees,0.247
+current,0.2472
+more regularized,0.248
+"small, regularized, more trees",0.2514
+smaller trees,0.252
