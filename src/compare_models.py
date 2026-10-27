@@ -8,6 +8,7 @@ MODEL_FILES = {
     "quantile baseline": "data/processed/baseline_quantiles.parquet",
     "LightGBM untuned": "data/processed/lgbm_quantiles.parquet",
     "LightGBM tuned": "data/processed/lgbm_tuned_quantiles.parquet",
+    "N-HiTS": "data/processed/nhits_quantiles.parquet",
 }
 
 rows = []
