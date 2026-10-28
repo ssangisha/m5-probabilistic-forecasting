@@ -1,0 +1,43 @@
+model,subset,tau,share_below,share_at_or_below,verdict
+quantile baseline,all series,0.025,0.03,0.637,ok
+quantile baseline,all series,0.05,0.031,0.638,ok
+quantile baseline,all series,0.1,0.034,0.641,ok
+quantile baseline,all series,0.5,0.2,0.726,ok
+quantile baseline,all series,0.9,0.671,0.875,too low
+quantile baseline,all series,0.95,0.686,0.891,too low
+quantile baseline,all series,0.975,0.689,0.894,too low
+quantile baseline,fast sellers (Q4),0.025,0.078,0.394,too high
+quantile baseline,fast sellers (Q4),0.05,0.081,0.398,too high
+quantile baseline,fast sellers (Q4),0.1,0.091,0.408,ok
+quantile baseline,fast sellers (Q4),0.5,0.368,0.604,ok
+quantile baseline,fast sellers (Q4),0.9,0.747,0.837,too low
+quantile baseline,fast sellers (Q4),0.95,0.772,0.862,too low
+quantile baseline,fast sellers (Q4),0.975,0.778,0.868,too low
+LightGBM tuned,all series,0.025,0.0,0.625,ok
+LightGBM tuned,all series,0.05,0.0,0.625,ok
+LightGBM tuned,all series,0.1,0.001,0.625,ok
+LightGBM tuned,all series,0.5,0.179,0.682,ok
+LightGBM tuned,all series,0.9,0.903,0.905,ok
+LightGBM tuned,all series,0.95,0.95,0.95,ok
+LightGBM tuned,all series,0.975,0.974,0.974,ok
+LightGBM tuned,fast sellers (Q4),0.025,0.0,0.356,ok
+LightGBM tuned,fast sellers (Q4),0.05,0.0,0.356,ok
+LightGBM tuned,fast sellers (Q4),0.1,0.005,0.357,ok
+LightGBM tuned,fast sellers (Q4),0.5,0.375,0.522,ok
+LightGBM tuned,fast sellers (Q4),0.9,0.885,0.886,too low
+LightGBM tuned,fast sellers (Q4),0.95,0.937,0.937,too low
+LightGBM tuned,fast sellers (Q4),0.975,0.964,0.964,too low
+N-HiTS,all series,0.025,0.011,0.626,ok
+N-HiTS,all series,0.05,0.029,0.627,ok
+N-HiTS,all series,0.1,0.119,0.629,too high
+N-HiTS,all series,0.5,0.58,0.679,too high
+N-HiTS,all series,0.9,0.9,0.9,ok
+N-HiTS,all series,0.95,0.948,0.948,ok
+N-HiTS,all series,0.975,0.973,0.973,ok
+N-HiTS,fast sellers (Q4),0.025,0.033,0.362,ok
+N-HiTS,fast sellers (Q4),0.05,0.057,0.367,ok
+N-HiTS,fast sellers (Q4),0.1,0.127,0.375,too high
+N-HiTS,fast sellers (Q4),0.5,0.497,0.521,ok
+N-HiTS,fast sellers (Q4),0.9,0.897,0.897,ok
+N-HiTS,fast sellers (Q4),0.95,0.944,0.944,ok
+N-HiTS,fast sellers (Q4),0.975,0.969,0.969,ok
