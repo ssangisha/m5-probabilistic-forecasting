@@ -1,0 +1,10 @@
+model,target_quantile,avg_inventory,fill_rate,normal_rule_fill_same_inventory,gain_in_points
+quantile baseline,0.9,1.7709,0.8588,0.8581,0.07
+quantile baseline,0.95,2.4172,0.9052,0.9068,-0.16
+quantile baseline,0.975,2.6953,0.9166,0.9212,-0.46
+LightGBM tuned,0.9,1.9179,0.8958,0.8716,2.42
+LightGBM tuned,0.95,2.7271,0.9448,0.9225,2.23
+LightGBM tuned,0.975,3.642,0.9696,0.951,1.86
+N-HiTS,0.9,1.8888,0.903,0.8689,3.41
+N-HiTS,0.95,2.8616,0.9508,0.9276,2.32
+N-HiTS,0.975,3.9138,0.9733,0.9566,1.67

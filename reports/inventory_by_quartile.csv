@@ -1,0 +1,17 @@
+vol_quartile,model,fill_rate,avg_inventory,cost_per_series_day,cost_vs_normal_rule_pct
+1,LightGBM tuned,0.907,1.344,1.772,-10.4
+1,N-HiTS,0.89,1.246,1.751,-11.5
+1,mean + safety stock (normal rule),0.846,1.275,1.979,0.0
+1,quantile baseline,0.841,1.259,1.988,0.5
+2,LightGBM tuned,0.915,1.687,2.33,-10.7
+2,N-HiTS,0.9,1.522,2.277,-12.8
+2,mean + safety stock (normal rule),0.871,1.634,2.61,0.0
+2,quantile baseline,0.866,1.592,2.605,-0.2
+3,LightGBM tuned,0.937,2.347,3.382,-12.3
+3,N-HiTS,0.943,2.343,3.276,-15.1
+3,mean + safety stock (normal rule),0.909,2.369,3.856,0.0
+3,quantile baseline,0.899,2.237,3.902,1.2
+4,LightGBM tuned,0.945,5.527,9.443,-13.8
+4,N-HiTS,0.955,6.022,9.217,-15.9
+4,mean + safety stock (normal rule),0.922,5.42,10.96,0.0
+4,quantile baseline,0.906,4.894,11.563,5.5

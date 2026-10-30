@@ -1,0 +1,23 @@
+model,tau,fill_rate,avg_inventory
+LightGBM tuned,0.5,0.4794,0.238
+LightGBM tuned,0.9,0.8958,1.9179
+LightGBM tuned,0.95,0.9448,2.7271
+LightGBM tuned,0.975,0.9696,3.642
+N-HiTS,0.5,0.4755,0.203
+N-HiTS,0.9,0.903,1.8888
+N-HiTS,0.95,0.9508,2.8616
+N-HiTS,0.975,0.9733,3.9138
+mean + safety stock (normal rule),0.5,0.6308,0.5494
+mean + safety stock (normal rule),0.7,0.7758,1.1175
+mean + safety stock (normal rule),0.8,0.835,1.5192
+mean + safety stock (normal rule),0.9,0.8906,2.1251
+mean + safety stock (normal rule),0.95,0.9189,2.6343
+mean + safety stock (normal rule),0.975,0.9364,3.0897
+mean + safety stock (normal rule),0.99,0.95,3.5924
+mean + safety stock (normal rule),0.995,0.9576,3.9608
+mean + safety stock (normal rule),0.999,0.9701,4.8107
+quantile baseline,0.5,0.5641,0.4091
+quantile baseline,0.9,0.8588,1.7709
+quantile baseline,0.95,0.9052,2.4172
+quantile baseline,0.975,0.9166,2.6953
+seasonal-naive (no buffer),,0.6465,1.046
