@@ -2,6 +2,7 @@
 # Trains one N-HiTS model per fold with a multi-quantile loss and saves the forecasts
 # in the same format as the other models.
 
+import sys
 import re
 import numpy as np
 import pandas as pd
@@ -14,6 +15,10 @@ from scoring import TAUS
 INPUT_SIZE = 56          # look back 8 weeks
 MAX_STEPS = 500          # fixed in advance, not tuned on any fold
 LEVELS = [80, 90, 95]    # gives quantiles 0.1/0.9, 0.05/0.95, 0.025/0.975, plus the median
+# Run with: python src/train_nhits.py 43   (the default seed is 42)
+SEED = int(sys.argv[1]) if len(sys.argv) > 1 else 42
+OUTPUT_FILE = ("data/processed/nhits_quantiles.parquet" if SEED == 42
+               else f"data/processed/nhits_quantiles_seed{SEED}.parquet")
 
 
 def column_to_quantile(column):
@@ -42,7 +47,7 @@ for fold in TRAIN_ENDS:
 
     model = NHITS(h=HORIZON, input_size=INPUT_SIZE, loss=MQLoss(level=LEVELS),
                   max_steps=MAX_STEPS, scaler_type="standard",
-                  random_seed=42, logger=False)
+                  random_seed=SEED, logger=False)
     nf = NeuralForecast(models=[model], freq="D")
     nf.fit(df=neural_train)
 
@@ -74,5 +79,5 @@ for fold in TRAIN_ENDS:
     print(f"fold {fold} done")
 
 all_results = pd.concat(all_results)
-all_results.to_parquet("data/processed/nhits_quantiles.parquet", index=False)
+all_results.to_parquet(OUTPUT_FILE, index=False)
 print(all_results.groupby("fold").size())
