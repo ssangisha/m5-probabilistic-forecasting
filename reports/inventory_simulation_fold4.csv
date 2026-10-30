@@ -1,0 +1,16 @@
+shortage_cost,target_quantile,model,fill_rate,stockout_day_rate,avg_inventory,cost_per_series_day
+9,0.9,seasonal-naive (no buffer),0.646,0.192,1.046,5.405
+9,0.9,mean + safety stock (normal rule),0.891,0.063,2.125,3.474
+9,0.9,quantile baseline,0.859,0.083,1.771,3.512
+9,0.9,LightGBM tuned,0.896,0.057,1.918,3.202
+9,0.9,N-HiTS,0.903,0.059,1.889,3.085
+19,0.95,seasonal-naive (no buffer),0.646,0.192,1.046,10.249
+19,0.95,mean + safety stock (normal rule),0.919,0.046,2.634,4.746
+19,0.95,quantile baseline,0.905,0.052,2.417,4.885
+19,0.95,LightGBM tuned,0.945,0.03,2.727,4.164
+19,0.95,N-HiTS,0.951,0.029,2.862,4.143
+39,0.975,seasonal-naive (no buffer),0.646,0.192,1.046,19.937
+39,0.975,mean + safety stock (normal rule),0.936,0.036,3.09,6.489
+39,0.975,quantile baseline,0.917,0.045,2.695,7.151
+39,0.975,LightGBM tuned,0.97,0.016,3.642,5.269
+39,0.975,N-HiTS,0.973,0.015,3.914,5.34

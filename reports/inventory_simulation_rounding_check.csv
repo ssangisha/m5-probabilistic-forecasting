@@ -1,0 +1,6 @@
+shortage_cost,target_quantile,model,nearest,up,down
+19,0.95,seasonal-naive (no buffer),9.684,9.684,9.684
+19,0.95,mean + safety stock (normal rule),4.851,4.859,5.152
+19,0.95,quantile baseline,5.014,4.999,5.372
+19,0.95,LightGBM tuned,4.232,4.432,4.32
+19,0.95,N-HiTS,4.13,4.273,4.283
