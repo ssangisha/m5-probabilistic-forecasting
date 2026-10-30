@@ -92,6 +92,7 @@ for fold in FOLDS:
             pieces.append(run_policy(model_name, tau, fold, demand, levels, series_ids))
 
 results = pd.concat(pieces)
+results.to_parquet("data/processed/inventory_series_level_results.parquet", index=False)
 
 
 def summarize(data):
