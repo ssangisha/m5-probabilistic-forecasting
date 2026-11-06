@@ -4,8 +4,11 @@
 # It only reads files in the reports folder, so nothing is retrained.
 
 import os
+import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 import streamlit as st
+from inventory_policy import simulate_base_stock
 
 REPORTS = "reports"
 
@@ -40,10 +43,133 @@ st.caption(
     "not savings achieved in a real business."
 )
 
-tab_accuracy, tab_calibration, tab_inventory, tab_about = st.tabs(
-    ["Forecast accuracy", "Calibration", "Inventory decisions", "About"]
+tab_accuracy, tab_calibration, tab_inventory, tab_explorer, tab_about = st.tabs(
+    ["Forecast accuracy", "Calibration", "Inventory decisions",
+     "Explore one product", "About"]
 )
+# ---------------------------------------------------------------- explorer
+FORECAST_FILES = {
+    "quantile baseline": "baseline_quantiles.parquet",
+    "LightGBM tuned": "lgbm_tuned_quantiles.parquet",
+    "N-HiTS": "nhits_quantiles.parquet",
+}
+SCOPE_FILE = os.path.join("data", "scope", "scope_skus.csv")
+FOLD_LABELS = {
+    1: "Fold 1 (Jun-Jul 2015)",
+    2: "Fold 2 (Sep-Oct 2015)",
+    3: "Fold 3 (Dec 2015 - Jan 2016, includes Christmas)",
+    4: "Fold 4 (Mar-Apr 2016, held out)",
+}
 
+
+@st.cache_data
+def load_forecasts(file_name):
+    forecasts = pd.read_parquet(os.path.join(REPORTS, "forecasts", file_name))
+    forecasts["date"] = pd.to_datetime(forecasts["date"])
+    return forecasts
+
+
+@st.cache_data
+def load_scope():
+    return pd.read_csv(SCOPE_FILE)[["id", "cat_id", "store_id", "vol_quartile"]]
+
+
+def get_window(file_name, series_id, fold):
+    """Forecasts and actual sales of one product in one 28-day test window."""
+    forecasts = load_forecasts(file_name)
+    window = forecasts[(forecasts["id"] == series_id) & (forecasts["fold"] == fold)]
+    return window.sort_values("date")
+
+
+def stock_levels(window, target):
+    """Order-up-to level for each day: the forecast quantile in whole units."""
+    return np.maximum(np.round(window[f"q{target}"].to_numpy()), 0)
+
+
+with tab_explorer:
+    st.subheader("Explore one product")
+    st.write(
+        "Pick a product and a 28-day test window. Bars are actual daily sales. "
+        "The shaded bands are the model's forecast range, and the red line is the "
+        "stock level the policy would set each morning."
+    )
+
+    forecast_folder = os.path.join(REPORTS, "forecasts")
+    missing = [name for name in FORECAST_FILES.values()
+               if not os.path.exists(os.path.join(forecast_folder, name))]
+    if missing or not os.path.exists(SCOPE_FILE):
+        st.warning("Forecast files are missing. Run src/export_dashboard_data.py first.")
+    else:
+        scope = load_scope()
+
+        left, middle, right = st.columns(3)
+        category = left.selectbox("Category", sorted(scope["cat_id"].unique()))
+        store = middle.selectbox("Store", sorted(scope["store_id"].unique()))
+        group = right.selectbox(
+            "Sales volume group (1 = slowest, 4 = fastest)", [1, 2, 3, 4], index=3)
+        candidates = scope[(scope["cat_id"] == category) & (scope["store_id"] == store)
+                           & (scope["vol_quartile"] == group)]
+        series_id = st.selectbox("Product", sorted(candidates["id"]))
+
+        first, second, third = st.columns(3)
+        model_name = first.selectbox("Model", list(FORECAST_FILES))
+        fold = second.selectbox("Test window", [4, 3, 2, 1],
+                                format_func=lambda number: FOLD_LABELS[number])
+        target = third.selectbox("Stocking quantile", [0.9, 0.95, 0.975], index=1)
+
+        window = get_window(FORECAST_FILES[model_name], series_id, fold)
+        if window.empty:
+            st.warning("No forecasts found for this product and window.")
+        else:
+            levels = stock_levels(window, target)
+
+            figure, axis = plt.subplots(figsize=(11, 4))
+            axis.fill_between(window["date"], window["q0.05"], window["q0.95"],
+                              alpha=0.2, label="5% to 95% range")
+            axis.fill_between(window["date"], window["q0.1"], window["q0.9"],
+                              alpha=0.35, label="10% to 90% range")
+            axis.plot(window["date"], window["q0.5"], label="median forecast")
+            axis.bar(window["date"], window["sales"], width=0.6, color="black",
+                     alpha=0.6, label="actual sales")
+            axis.step(window["date"], levels, where="mid", color="red",
+                      label=f"stock level ({target} quantile)")
+            axis.set_ylabel("units per day")
+            axis.legend(loc="upper left", fontsize=8)
+            figure.autofmt_xdate()
+            st.pyplot(figure)
+            plt.close(figure)
+
+            result = simulate_base_stock(window["sales"].to_numpy()[None, :],
+                                         levels[None, :])
+            demanded = int(window["sales"].sum())
+            lost = int(result["units_lost"][0])
+            average_stock = result["inventory_units_nights"][0] / len(window)
+            one, two, three, four = st.columns(4)
+            one.metric("Units demanded", demanded)
+            two.metric("Units lost", lost)
+            three.metric("Stockout days", int(result["stockout_days"][0]))
+            four.metric("Average stock at night", f"{average_stock:.1f}")
+
+            st.write("Same product and window, all three models")
+            rows = []
+            for name, file_name in FORECAST_FILES.items():
+                part = get_window(file_name, series_id, fold)
+                part_levels = stock_levels(part, target)
+                part_result = simulate_base_stock(part["sales"].to_numpy()[None, :],
+                                                  part_levels[None, :])
+                rows.append({
+                    "model": name,
+                    "units_lost": int(part_result["units_lost"][0]),
+                    "stockout_days": int(part_result["stockout_days"][0]),
+                    "average_stock": round(part_result["inventory_units_nights"][0] / len(part), 2),
+                })
+            st.dataframe(pd.DataFrame(rows), hide_index=True)
+
+            st.caption(
+                "One product over 28 days is a single example, not evidence. Do not "
+                "judge a model from one chart. The Inventory tab shows results over "
+                "all 720 products."
+            )
 # ---------------------------------------------------------------- accuracy
 with tab_accuracy:
     st.subheader("How accurate are the forecasts?")
